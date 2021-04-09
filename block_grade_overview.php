@@ -125,7 +125,8 @@ class block_grade_overview extends block_base {
                         . ($totalstundents - $totalaccess) . '</strong></td>';
                 $outputhtml .= '</tr>';
                 $outputhtml .= '</table>';
-                $outputhtml .= '<hr/><div class="w-100 text-right small"><a href="' . $CFG->wwwroot . '/blocks/grade_overview/view.php?id='
+                $outputhtml .= '<hr/><div class="w-100 text-right small"><a href="'
+                        . $CFG->wwwroot . '/blocks/grade_overview/view.php?id='
                         . $COURSE->id . '&instanceid=' . $this->instance->id
                         . '"><i class="icon fa fa-table fa-lg " aria-hidden="true"></i>'
                         . get_string('detailed_view', 'block_grade_overview') . '</a></div>';
