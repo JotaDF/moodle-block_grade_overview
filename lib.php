@@ -63,12 +63,12 @@ function get_count_atv_all($courseid, $iteminstance, $itemtype) {
     global $DB;
     if ($courseid > 1) {
         $sql = "SELECT count(*) as total "
-                . "FROM {grade}_items i "
+                . "FROM {grade_items} i "
                 . "INNER JOIN {grade_grades} g ON i.id=g.itemid "
-                . "AND g.finalgrade IS NOT NULL "
                 . "WHERE i.courseid= :courseid "
                 . "AND i.itemmodule= :itemtype "
-                . "AND i.iteminstance= :iteminstance ORDER BY itemname";
+                . "AND g.finalgrade IS NOT NULL "
+                . "AND i.iteminstance= :iteminstance";
         $params['courseid'] = $courseid;
         $params['itemtype'] = $itemtype;
         $params['iteminstance'] = $iteminstance;
@@ -164,18 +164,18 @@ function get_course_activities($courseid) {
                 }
                 array_push($ids, $cm->id);
                 $activities[] = array(
-                    'type'       => $module,
+                    'type' => $module,
                     'modulename' => $modulename,
-                    'id'         => $cm->id,
-                    'instance'   => $cm->instance,
-                    'name'       => $cm->name,
-                    'expected'   => $cm->completionexpected,
-                    'section'    => $cm->sectionnum,
-                    'position'   => array_search($cm->id, $sections[$cm->sectionnum]),
-                    'url'        => method_exists($cm->url, 'out') ? $cm->url->out() : '',
-                    'context'    => $cm->context,
-                    'icon'       => $cm->get_icon_url(),
-                    'available'  => $cm->available,
+                    'id' => $cm->id,
+                    'instance' => $cm->instance,
+                    'name' => $cm->name,
+                    'expected' => $cm->completionexpected,
+                    'section' => $cm->sectionnum,
+                    'position' => array_search($cm->id, $sections[$cm->sectionnum]),
+                    'url' => method_exists($cm->url, 'out') ? $cm->url->out() : '',
+                    'context' => $cm->context,
+                    'icon' => $cm->get_icon_url(),
+                    'available' => $cm->available,
                 );
             }
         }
