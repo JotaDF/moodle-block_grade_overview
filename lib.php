@@ -105,14 +105,14 @@ function count_studens_course($courseid) {
  * @param int $courseid
  * @return mixed
  */
-function get_users_course($courseid) {
+function get_studens_course($courseid) {
     global $DB;
     if ($courseid > 1) {
         $sql = "SELECT u.* FROM {role_assignments} rs"
                 . " INNER JOIN {user} u ON u.id=rs.userid"
                 . " INNER JOIN {context} e ON rs.contextid=e.id"
                 . " INNER JOIN {course} c ON c.id=e.instanceid"
-                . " WHERE e.contextlevel=50 AND c.id=:courseid";
+                . " WHERE e.contextlevel=50 AND rs.roleid=5 AND c.id=:courseid";
         $params['courseid'] = $courseid;
         $rs = $DB->get_records_sql($sql, $params);
         return $rs;

@@ -65,7 +65,7 @@ if (isset($SESSION->grade)) {
         if (isset($grade->config->calc) && $grade->config->calc > 0) {
             $calc = $grade->config->calc;
         }
-        $users = get_users_course($courseid);
+        $users = get_studens_course($courseid);
         $outputhtml .= '<table class="generaltable" id="notas">';
         $outputhtml .= '<tr class="">';
         $outputhtml .= '<td class="cell c0" style=""><strong>' . get_string('name') . '</strong></td>';
@@ -89,61 +89,59 @@ if (isset($SESSION->grade)) {
 
         $outputhtml .= '</tr>';
         foreach ($users as $userx) {
-            if (has_capability('block/grade_overview:listview', $context, $userx->id)) {
-                $outputhtml .= '<tr class="">';
-                $outputhtml .= '<td class="cell c0" style="">' . $userx->firstname . ' ' . $userx->lastname . '</td>';
-                $count = 1;
-                $max = count($atvscheck);
-                $countx = 0;
-                $sum = 0;
-                $taller = 0;
-                $decimal = 2;
-                foreach ($atvscheck as $atv) {
-                    $gradeatv = get_grade_atcvity($courseid, $userx->id, $atv['instance'], $atv['type']);
-                    $last = '';
-                    if ($count == $max) {
-                        $last = 'lastcol';
-                    }
-                    if (isset($gradeatv->finalgrade)) {
-                        if (isset($grade->config->decimal_places)) {
-                            $decimal = $grade->config->decimal_places;
-                        }
-                        $outputhtml .= '<td class="cell c' . $count . ' '
-                                . $last . ' text-center" style="">'
-                                . number_format($gradeatv->finalgrade, $decimal, '.', '') . '</td>';
-                        $sum += $gradeatv->finalgrade;
-                        if ($gradeatv->finalgrade > $taller) {
-                            $taller = $gradeatv->finalgrade;
-                        }
-                        $countx++;
-                    } else {
-                        $outputhtml .= '<td class="cell c' . $count . ' '
-                                . $last . ' text-center" style=""> - </td>';
-                    }
-                    $count++;
+            $outputhtml .= '<tr class="">';
+            $outputhtml .= '<td class="cell c0" style="">' . $userx->firstname . ' ' . $userx->lastname . '</td>';
+            $count = 1;
+            $max = count($atvscheck);
+            $countx = 0;
+            $sum = 0;
+            $taller = 0;
+            $decimal = 2;
+            foreach ($atvscheck as $atv) {
+                $gradeatv = get_grade_atcvity($courseid, $userx->id, $atv['instance'], $atv['type']);
+                $last = '';
+                if ($count == $max) {
+                    $last = 'lastcol';
                 }
-                $final = 0;
-                if ($max == $countx && $calc > 0) {
-                    switch ($calc) {
-                        case 1:
-                            $final = $sum;
-                            break;
-                        case 2:
-                            $final = $sum / $max;
-                            break;
-                        case 3:
-                            $final = $taller;
-                            break;
+                if (isset($gradeatv->finalgrade)) {
+                    if (isset($grade->config->decimal_places)) {
+                        $decimal = $grade->config->decimal_places;
                     }
                     $outputhtml .= '<td class="cell c' . $count . ' '
-                            . $last . ' text-center" style=""><strong>' . number_format($final, $decimal, '.', '')
-                            . '</strong></td>';
-                } else if ($max > $countx && $calc > 0) {
+                            . $last . ' text-center" style="">'
+                            . number_format($gradeatv->finalgrade, $decimal, '.', '') . '</td>';
+                    $sum += $gradeatv->finalgrade;
+                    if ($gradeatv->finalgrade > $taller) {
+                        $taller = $gradeatv->finalgrade;
+                    }
+                    $countx++;
+                } else {
                     $outputhtml .= '<td class="cell c' . $count . ' '
-                            . $last . ' text-center" style=""><strong> - </strong></td>';
+                            . $last . ' text-center" style=""> - </td>';
                 }
-                $outputhtml .= '</tr>';
+                $count++;
             }
+            $final = 0;
+            if ($max == $countx && $calc > 0) {
+                switch ($calc) {
+                    case 1:
+                        $final = $sum;
+                        break;
+                    case 2:
+                        $final = $sum / $max;
+                        break;
+                    case 3:
+                        $final = $taller;
+                        break;
+                }
+                $outputhtml .= '<td class="cell c' . $count . ' '
+                        . $last . ' text-center" style=""><strong>' . number_format($final, $decimal, '.', '')
+                        . '</strong></td>';
+            } else if ($max > $countx && $calc > 0) {
+                $outputhtml .= '<td class="cell c' . $count . ' '
+                        . $last . ' text-center" style=""><strong> - </strong></td>';
+            }
+            $outputhtml .= '</tr>';
         }
         $outputhtml .= '</table>';
     }
