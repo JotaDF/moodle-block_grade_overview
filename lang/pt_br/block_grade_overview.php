@@ -34,7 +34,9 @@ $string['config_decimal_places'] = 'Casas decimais';
 $string['config_decimal_places_help'] = 'Selecione a quantidade de casas decimais que as notas seram mostradas.';
 $string['config_show_check'] = 'Mostrar check';
 $string['config_show_check_help'] = 'Mostrar check nas atividades que receberam nota.';
-$string['config_select_activitys'] = '<legend>Selecione as atividades que deveram ser exibidas no bloco</legend>';
+$string['config_show_progress_bar'] = 'Mostrar barra de progresso do curso';
+$string['config_show_progress_bar_help'] = 'Mostrar barra com o percentual de progresso do curso.';
+$string['config_select_activitys'] = '<legend>Selecione as atividades que compõem a avalição e deverão ser exibidas no bloco</legend>';
 
 $string['none'] = 'Nenhum';
 $string['sum'] = 'Soma';
@@ -44,11 +46,13 @@ $string['final_grade'] = 'Nota final';
 
 $string['grade_awarded'] = 'Nota atribuída';
 $string['grade_pending'] = 'Nota Pendente';
-$string['percentage'] = 'Percentual de conclusão das avaliações.';
+$string['completed_course'] = 'Concluído do curso.';
+$string['percentage'] = 'Percentual de conclusão do curso.';
 $string['completed'] = 'Completados';
-$string['grade'] = 'Nota';
+$string['grade'] = 'Notas';
 $string['students'] = 'Alunos';
-$string['activity'] = 'Atividade';
+$string['activity'] = 'Atividades';
+$string['assessments'] = 'Avaliações';
 $string['never_access'] = 'Nunca acessaram o curso';
 $string['detailed_view'] = 'Visão detalhada';
 

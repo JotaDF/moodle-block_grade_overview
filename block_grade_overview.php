@@ -61,6 +61,7 @@ class block_grade_overview extends block_base {
             $this->title = format_string($this->config->title);
         }
     }
+
     /**
      * Creates the block's main content
      *
@@ -94,6 +95,9 @@ class block_grade_overview extends block_base {
                     $atvscheck[] = $activity;
                 }
             }
+            $shownameuser = !isset($this->config->show_name_user) || $this->config->show_name_user == 1;
+            $showcheck = !isset($this->config->show_check) || $this->config->show_check == 1;
+
             // If teacher.
             $context = \context_course::instance($COURSE->id, MUST_EXIST);
             if (has_capability('moodle/course:viewhiddenactivities', $context, $USER->id)) {
@@ -109,8 +113,17 @@ class block_grade_overview extends block_base {
                 $totalstundents = count_studens_course($COURSE->id);
                 foreach ($atvscheck as $atv) {
                     $totalatv = get_count_atv_all($COURSE->id, $atv['instance'], $atv['type']);
+                    $imgcheck = '';
+                    if ($showcheck) {
+                        $imgcheck = '<img title="' . get_string('grade_pending', 'block_grade_overview') . '" src="'
+                                . $CFG->wwwroot . '/blocks/grade_overview/pix/nocheck.png"/>';
+                        if ($totalatv == $totalstundents) {
+                            $imgcheck = '<img title="' . get_string('grade_awarded', 'block_grade_overview') . '" src="'
+                                    . $CFG->wwwroot . '/blocks/grade_overview/pix/check.png"/>';
+                        }
+                    }
                     $outputhtml .= '<tr class="">';
-                    $outputhtml .= '<td class="cell c0" style=""><a href="'
+                    $outputhtml .= '<td class="cell c0" style="">' . $imgcheck . ' <a href="'
                             . $atv['url'] . '">' . $atv['name'] . '</a></td>';
                     $outputhtml .= '<td class="cell c1 lastcol text-right" style="">'
                             . $totalatv . '/' . $totalstundents . '</td>';
@@ -131,8 +144,6 @@ class block_grade_overview extends block_base {
                         . '"><i class="icon fa fa-table fa-lg " aria-hidden="true"></i>'
                         . get_string('detailed_view', 'block_grade_overview') . '</a></div>';
             } else {
-                $shownameuser = !isset($this->config->show_name_user) || $this->config->show_name_user == 1;
-                $showcheck = !isset($this->config->show_check) || $this->config->show_check == 1;
                 $calc = 0;
                 if (isset($this->config->calc)) {
                     $calc = $this->config->calc;
@@ -146,9 +157,9 @@ class block_grade_overview extends block_base {
                 }
                 $outputhtml .= '<table class="generaltable" id="notas">';
                 $outputhtml .= '<tr class="">';
-                $outputhtml .= '<td class="cell c0" style=""><i class="fa fa-bookmark fa-lg" aria-hidden="true"></i>'
+                $outputhtml .= '<td class="cell c0 small" style=""><i class="fa fa-bookmark fa-lg" aria-hidden="true"></i>'
                         . get_string('activity', 'block_grade_overview') . '</td>';
-                $outputhtml .= '<td class="cell c1 lastcol text-right" style="">'
+                $outputhtml .= '<td class="cell c1 lastcol text-right small" style="">'
                         . '<i class="icon fa fa-table fa-fw " aria-hidden="true"></i>'
                         . get_string('grade', 'block_grade_overview') . '</td>';
                 $outputhtml .= '</tr>';
@@ -188,14 +199,7 @@ class block_grade_overview extends block_base {
                     $outputhtml .= '</tr>';
                 }
                 $outputhtml .= '</table>';
-                $percente = round($cont * 100 / $totalatv);
-                $outputhtml .= '<div class="progress w-100">
-                    <div title="' . get_string('percentage', 'block_grade_overview')
-                        . '" class="progress-bar bg-success" role="progressbar" style="width: '
-                        . $percente . '%;" aria-valuenow="' . $percente . '" aria-valuemin="0" aria-valuemax="100">'
-                        . $percente . '%</div>
-                    </div>';
-                $outputhtml .= '<div>';
+                $outputhtml .= '<div class="w-100 text-right">';
                 if ($totalatv == $cont && $calc > 0) {
                     $final = 0;
                     switch ($calc) {
@@ -212,10 +216,13 @@ class block_grade_overview extends block_base {
                     $outputhtml .= '<b>' . get_string('final_grade', 'block_grade_overview');
                     $outputhtml .= ': &nbsp;&nbsp;&nbsp;' . number_format($final, $decimal, '.', '') . '</b><br/>';
                 }
-
-                $outputhtml .= '<span class="text-muted">' . $this->config->desription . '</span></div>';
+                if (isset($this->config->desription)) {
+                    $outputhtml .= '<span class="text-muted">' . $this->config->desription . '</span>';
+                }
+                $outputhtml .= '</div>';
             }
         }
+
         $outputhtml .= '</div>';
 
         $this->content->text .= $outputhtml;
@@ -236,6 +243,7 @@ class block_grade_overview extends block_base {
             'my' => true
         );
     }
+
     /**
      * Allow instance block.
      *
@@ -244,6 +252,7 @@ class block_grade_overview extends block_base {
     public function instance_allow_multiple() {
         return false;
     }
+
     /**
      * Config block.
      *
@@ -252,6 +261,7 @@ class block_grade_overview extends block_base {
     public function has_config() {
         return true;
     }
+
     /**
      * Config cron block.
      *

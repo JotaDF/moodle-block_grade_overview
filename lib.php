@@ -21,6 +21,8 @@
  * @copyright  José Wilson <j.wilson.df@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use core_competency\api as competency_api;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -197,4 +199,35 @@ function compare_activities($a, $b) {
     } else {
         return $a['position'] - $b['position'];
     }
+}
+
+/**
+ * Returns user course progress
+ *
+ * @param \stdClass $user
+ * @param \stdClass $course
+ * @return doudle
+ */
+function user_course_progress($user, $course) {
+    global $USER;
+    $percentage = 0;
+    if (($USER->id !== $user->id) && !is_siteadmin($USER->id)) {
+        return 0;
+    }
+
+    $completion = new \completion_info($course);
+
+    // First, let's make sure completion is enabled.
+    if ($completion->is_enabled()) {
+        $percentage = \core_completion\progress::get_course_progress_percentage($course, $user->id);
+
+        if (!is_null($percentage)) {
+            $percentage = floor($percentage);
+        }
+
+        if (is_null($percentage)) {
+            $percentage = 0;
+        }
+    }
+    return $percentage;
 }
