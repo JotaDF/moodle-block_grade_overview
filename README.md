@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/JotaDF/moodle-block_grade_overview.svg?branch=master)](https://travis-ci.com/JotaDF/moodle-block_grade_overview)
+
 Moodle Block Grade Overview 
 ===========================
 VERSION 1.0
