@@ -41,7 +41,6 @@ $PAGE->set_title(get_string('pluginname', 'block_grade_overview'));
 $PAGE->set_heading(get_string('pluginname', 'block_grade_overview'));
 
 echo $OUTPUT->header();
-$block = $DB->get_record('block_instances', array('id' => $id), '*', MUST_EXIST);
 
 $blockcontext = CONTEXT_BLOCK::instance($id);
 $outputhtml = '<div class="view">';

@@ -231,3 +231,153 @@ function user_course_progress($user, $course) {
     }
     return $percentage;
 }
+
+/**
+ * Returns html view student
+ *
+ * @param \stdClass $user
+ * @param \stdClass $course
+ * @param array $atvscheck
+ * @param int $calc
+ * @param int $decimal_places
+ * @param string $desription
+ * @param boolean $showcheck
+ * @param boolean $shownameuser
+ * @return string
+ */
+function get_view_student($user, $course, $atvscheck, $calc, $decimal_places, $desription, $showcheck, $shownameuser) {
+    global $CFG;
+    $outputhtml = '';
+    if (!isset($calc)) {
+        $calc = 0;
+    }
+    if ($shownameuser) {
+        $outputhtml .= '<div class="w-100 text-right"><span class="text-muted">'
+                . $user->firstname . ' ' . $user->lastname . '</span></div>';
+    }
+    $outputhtml .= '<table class="generaltable" id="notas">';
+    $outputhtml .= '<tr class="">';
+    $outputhtml .= '<td class="cell c0 small" style=""><i class="fa fa-bookmark fa-lg" aria-hidden="true"></i>'
+            . get_string('activity', 'block_grade_overview') . '</td>';
+    $outputhtml .= '<td class="cell c1 lastcol text-right small" style="">'
+            . '<i class="icon fa fa-table fa-fw " aria-hidden="true"></i>'
+            . get_string('grade', 'block_grade_overview') . '</td>';
+    $outputhtml .= '</tr>';
+    $cont = 0;
+    $sum = 0;
+    $taller = 0;
+    $decimal = 2;
+    $totalatv = count($atvscheck);
+    foreach ($atvscheck as $atv) {
+        $gradeatv = get_grade_atcvity($course->id, $user->id, $atv['instance'], $atv['type']);
+        $imgcheck = '';
+        if ($showcheck) {
+            $imgcheck = '<img title="' . get_string('grade_pending', 'block_grade_overview') . '" src="'
+                    . $CFG->wwwroot . '/blocks/grade_overview/pix/nocheck.png"/>';
+            if (isset($gradeatv->finalgrade)) {
+                $imgcheck = '<img title="' . get_string('grade_awarded', 'block_grade_overview') . '" src="'
+                        . $CFG->wwwroot . '/blocks/grade_overview/pix/check.png"/>';
+            }
+        }
+        $outputhtml .= '<tr class="">';
+        $outputhtml .= '<td class="cell c0" style="">' . $imgcheck . ' <a href="' . $atv['url'] . '">'
+                . $atv['name'] . '</a></td>';
+        if (isset($gradeatv->finalgrade)) {
+            if (isset($decimal_places)) {
+                $decimal = $decimal_places;
+            }
+            $outputhtml .= '<td class="cell c1 lastcol text-right" style="">'
+                    . number_format($gradeatv->finalgrade, $decimal, '.', '') . '</td>';
+            $sum += $gradeatv->finalgrade;
+            if ($gradeatv->finalgrade > $taller) {
+                $taller = $gradeatv->finalgrade;
+            }
+            $cont++;
+        } else {
+            $outputhtml .= '<td class="cell c1 lastcol text-right" style=""> - </td>';
+        }
+        $outputhtml .= '</tr>';
+    }
+    $outputhtml .= '</table>';
+    $outputhtml .= '<div class="w-100 text-right">';
+    if ($totalatv == $cont && $calc > 0) {
+        $final = 0;
+        switch ($calc) {
+            case 1:
+                $final = $sum;
+                break;
+            case 2:
+                $final = $sum / $totalatv;
+                break;
+            case 3:
+                $final = $taller;
+                break;
+        }
+        $outputhtml .= '<b>' . get_string('final_grade', 'block_grade_overview');
+        $outputhtml .= ': &nbsp;&nbsp;&nbsp;' . number_format($final, $decimal, '.', '') . '</b><br/>';
+    }
+    if (isset($desription)) {
+        $outputhtml .= '<span class="text-muted">' . $desription . '</span>';
+    }
+    $outputhtml .= '</div>';
+    
+    return $outputhtml;
+}
+
+/**
+ * Returns html view editor
+ *
+ * @param \stdClass $user
+ * @param \stdClass $course
+ * @param int $instanceid
+ * @param array $atvscheck
+ * @param boolean $showcheck
+ * @return string
+ */
+function get_view_editor($course, $instanceid, $atvscheck, $showcheck) {
+    global $CFG;
+    $outputhtml = '';
+    $outputhtml .= '<table class="generaltable" id="notas">';
+    $outputhtml .= '<tr class="">';
+    $outputhtml .= '<td class="cell c0 small" style="">'
+            . '<i class="fa fa-bookmark fa-lg" aria-hidden="true"></i> '
+            . get_string('activity', 'block_grade_overview') . '</td>';
+    $outputhtml .= '<td class="cell c1 lastcol text-right small" style="">'
+            . '<i class="icon fa fa-user fa-fw " aria-hidden="true"></i> '
+            . get_string('students', 'block_grade_overview') . '</td>';
+    $outputhtml .= '</tr>';
+    $totalstundents = count_studens_course($course->id);
+    foreach ($atvscheck as $atv) {
+        $totalatv = get_count_atv_all($course->id, $atv['instance'], $atv['type']);
+        $imgcheck = '';
+        if ($showcheck) {
+            $imgcheck = '<img title="' . get_string('grade_pending', 'block_grade_overview') . '" src="'
+                    . $CFG->wwwroot . '/blocks/grade_overview/pix/nocheck.png"/>';
+            if ($totalatv == $totalstundents) {
+                $imgcheck = '<img title="' . get_string('grade_awarded', 'block_grade_overview') . '" src="'
+                        . $CFG->wwwroot . '/blocks/grade_overview/pix/check.png"/>';
+            }
+        }
+        $outputhtml .= '<tr class="">';
+        $outputhtml .= '<td class="cell c0" style="">' . $imgcheck . ' <a href="'
+                . $atv['url'] . '">' . $atv['name'] . '</a></td>';
+        $outputhtml .= '<td class="cell c1 lastcol text-right" style="">'
+                . $totalatv . '/' . $totalstundents . '</td>';
+        $outputhtml .= '</tr>';
+    }
+    $totalaccess = count_studens_accessed_course($course->id);
+    $outputhtml .= '<tr class="">';
+    $outputhtml .= '<td class="cell c0 " style=""><strong>'
+            . '<i class="icon fa fa-user fa-lg" aria-hidden="true"></i>'
+            . get_string('never_access', 'block_grade_overview') . '</strong></td>';
+    $outputhtml .= '<td class="cell c1 lastcol text-right" style=""><strong>'
+            . ($totalstundents - $totalaccess) . '</strong></td>';
+    $outputhtml .= '</tr>';
+    $outputhtml .= '</table>';
+    $outputhtml .= '<hr/><div class="w-100 text-right small"><a href="'
+            . $CFG->wwwroot . '/blocks/grade_overview/view.php?id='
+            . $course->id . '&instanceid=' . $instanceid
+            . '"><i class="icon fa fa-table fa-lg " aria-hidden="true"></i>'
+            . get_string('detailed_view', 'block_grade_overview') . '</a></div>';
+    return $outputhtml;
+}
