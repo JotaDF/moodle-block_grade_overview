@@ -68,7 +68,7 @@ class block_grade_overview extends block_base {
      * @return string
      */
     public function get_content() {
-        global $CFG, $USER, $COURSE, $SESSION;
+        global $USER, $COURSE, $SESSION;
 
         $this->content = new stdClass();
         $this->content->items = array();

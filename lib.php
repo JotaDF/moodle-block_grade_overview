@@ -334,8 +334,7 @@ function get_view_student($user, $course, $atvscheck, $calc, $decimalplaces, $de
  */
 function get_view_editor($course, $instanceid, $atvscheck, $showcheck) {
     global $CFG;
-    $outputhtml = '';
-    $outputhtml .= '<table class="generaltable" id="notas">';
+    $outputhtml = '<table class="generaltable" id="notas">';
     $outputhtml .= '<tr class="">';
     $outputhtml .= '<td class="cell c0 small" style="">'
             . '<i class="fa fa-bookmark fa-lg" aria-hidden="true"></i> '
