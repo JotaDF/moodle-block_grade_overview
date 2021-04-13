@@ -28,7 +28,6 @@ require_login();
 
 global $USER, $SESSION, $COURSE, $OUTPUT, $CFG;
 
-
 $courseid = required_param('id', PARAM_INT);
 $id = required_param('instanceid', PARAM_INT);
 

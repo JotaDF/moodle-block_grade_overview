@@ -68,7 +68,7 @@ class block_grade_overview extends block_base {
      * @return string
      */
     public function get_content() {
-        global $CFG, $OUTPUT, $USER, $COURSE, $SESSION;
+        global $CFG, $USER, $COURSE, $SESSION;
 
         $this->content = new stdClass();
         $this->content->items = array();
@@ -89,7 +89,7 @@ class block_grade_overview extends block_base {
             $coursedata = get_course_activities($COURSE->id);
             $activities = $coursedata['activities'];
             $atvscheck = array();
-            foreach ($activities as $index => $activity) {
+            foreach ($activities as $activity) {
                 $atvcheck = 'atv' . $activity['id'];
                 if (isset($this->config->$atvcheck) && $this->config->$atvcheck == $activity['id']) {
                     $atvscheck[] = $activity;

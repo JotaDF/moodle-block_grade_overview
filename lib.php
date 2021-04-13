@@ -159,7 +159,7 @@ function get_course_activities($courseid) {
     $ids = array();
     foreach ($modinfo->instances as $module => $instances) {
         $modulename = get_string('pluginname', $module);
-        foreach ($instances as $index => $cm) {
+        foreach ($instances as $cm) {
             if ($module != 'label') {
                 if (!in_array($module, $types)) {
                     array_push($types, $module);

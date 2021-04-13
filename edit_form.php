@@ -42,7 +42,7 @@ class block_grade_overview_edit_form extends block_edit_form {
      * @return void
      */
     protected function specific_definition($mform) {
-        global $CFG, $COURSE, $OUTPUT;
+        global $COURSE, $OUTPUT;
 
         // Section header title according to language file.
         $mform->addElement('header', 'configheader', get_string('blocksettings', 'block'));
@@ -91,7 +91,7 @@ class block_grade_overview_edit_form extends block_edit_form {
         /* Enable/Disable by activity or section */
         $coursedata = get_course_activities($COURSE->id);
         $activities = $coursedata['activities'];
-        foreach ($activities as $index => $activity) {
+        foreach ($activities as $activity) {
             $attributes = ['class' => 'iconlarge activityicon'];
             $icon = $OUTPUT->pix_icon('icon', $activity['modulename'], $activity['type'], $attributes);
             $activityoption = array();
