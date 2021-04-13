@@ -220,7 +220,6 @@ function user_course_progress($user, $course) {
     // First, let's make sure completion is enabled.
     if ($completion->is_enabled()) {
         $percentage = \core_completion\progress::get_course_progress_percentage($course, $user->id);
-
         if (!is_null($percentage)) {
             $percentage = floor($percentage);
         }
@@ -239,13 +238,13 @@ function user_course_progress($user, $course) {
  * @param \stdClass $course
  * @param array $atvscheck
  * @param int $calc
- * @param int $decimal_places
+ * @param int $decimalplaces
  * @param string $desription
  * @param boolean $showcheck
  * @param boolean $shownameuser
  * @return string
  */
-function get_view_student($user, $course, $atvscheck, $calc, $decimal_places, $desription, $showcheck, $shownameuser) {
+function get_view_student($user, $course, $atvscheck, $calc, $decimalplaces, $desription, $showcheck, $shownameuser) {
     global $CFG;
     $outputhtml = '';
     if (!isset($calc)) {
@@ -283,8 +282,8 @@ function get_view_student($user, $course, $atvscheck, $calc, $decimal_places, $d
         $outputhtml .= '<td class="cell c0" style="">' . $imgcheck . ' <a href="' . $atv['url'] . '">'
                 . $atv['name'] . '</a></td>';
         if (isset($gradeatv->finalgrade)) {
-            if (isset($decimal_places)) {
-                $decimal = $decimal_places;
+            if (isset($decimalplaces)) {
+                $decimal = $decimalplaces;
             }
             $outputhtml .= '<td class="cell c1 lastcol text-right" style="">'
                     . number_format($gradeatv->finalgrade, $decimal, '.', '') . '</td>';
@@ -320,14 +319,13 @@ function get_view_student($user, $course, $atvscheck, $calc, $decimal_places, $d
         $outputhtml .= '<span class="text-muted">' . $desription . '</span>';
     }
     $outputhtml .= '</div>';
-    
+
     return $outputhtml;
 }
 
 /**
  * Returns html view editor
  *
- * @param \stdClass $user
  * @param \stdClass $course
  * @param int $instanceid
  * @param array $atvscheck
@@ -379,5 +377,6 @@ function get_view_editor($course, $instanceid, $atvscheck, $showcheck) {
             . $course->id . '&instanceid=' . $instanceid
             . '"><i class="icon fa fa-table fa-lg " aria-hidden="true"></i>'
             . get_string('detailed_view', 'block_grade_overview') . '</a></div>';
+
     return $outputhtml;
 }
