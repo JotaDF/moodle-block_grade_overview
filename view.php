@@ -47,7 +47,7 @@ $outputhtml = '<div class="view">';
 $grade = new stdClass();
 if (isset($SESSION->grade)) {
     $grade = $SESSION->grade;
-    $coursedata = get_course_activities($courseid);
+    $coursedata = grade_overview_get_course_activities($courseid);
     $activities = $coursedata['activities'];
     $atvscheck = array();
     foreach ($activities as $index => $activity) {
@@ -63,7 +63,7 @@ if (isset($SESSION->grade)) {
         if (isset($grade->config->calc) && $grade->config->calc > 0) {
             $calc = $grade->config->calc;
         }
-        $users = get_studens_course($courseid);
+        $users = grade_overview_get_students_course($courseid);
         $outputhtml .= '<table class="generaltable" id="notas">';
         $outputhtml .= '<tr class="">';
         $outputhtml .= '<td class="cell c0" style=""><strong>' . get_string('name') . '</strong></td>';
@@ -96,21 +96,21 @@ if (isset($SESSION->grade)) {
             $taller = 0;
             $decimal = 2;
             foreach ($atvscheck as $atv) {
-                $gradeatv = get_grade_atcvity($courseid, $userx->id, $atv['instance'], $atv['type']);
+                $gradeuser = grade_overview_get_user_mod_grade($userx->id, $atv['instance'], $atv['type'], $courseid);
                 $last = '';
                 if ($count == $max) {
                     $last = 'lastcol';
                 }
-                if (isset($gradeatv->finalgrade)) {
+                if (isset($gradeuser) && $gradeuser) {
                     if (isset($grade->config->decimal_places)) {
                         $decimal = $grade->config->decimal_places;
                     }
                     $outputhtml .= '<td class="cell c' . $count . ' '
                             . $last . ' text-center" style="">'
-                            . number_format($gradeatv->finalgrade, $decimal, '.', '') . '</td>';
-                    $sum += $gradeatv->finalgrade;
-                    if ($gradeatv->finalgrade > $taller) {
-                        $taller = $gradeatv->finalgrade;
+                            . number_format($gradeuser, $decimal, '.', '') . '</td>';
+                    $sum += $gradeuser;
+                    if ($gradeuser > $taller) {
+                        $taller = $gradeuser;
                     }
                     $countx++;
                 } else {
@@ -120,13 +120,13 @@ if (isset($SESSION->grade)) {
                 $count++;
             }
             $final = 0;
-            if ($max == $countx && $calc > 0) {
+            if ($calc > 0 && $countx > 0) {
                 switch ($calc) {
                     case 1:
                         $final = $sum;
                         break;
                     case 2:
-                        $final = $sum / $max;
+                        $final = $sum / $countx;
                         break;
                     case 3:
                         $final = $taller;
@@ -135,7 +135,7 @@ if (isset($SESSION->grade)) {
                 $outputhtml .= '<td class="cell c' . $count . ' '
                         . $last . ' text-center" style=""><strong>' . number_format($final, $decimal, '.', '')
                         . '</strong></td>';
-            } else if ($max > $countx && $calc > 0) {
+            } else {
                 $outputhtml .= '<td class="cell c' . $count . ' '
                         . $last . ' text-center" style=""><strong> - </strong></td>';
             }

@@ -23,9 +23,7 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-require_once(dirname(__FILE__) . '/../../config.php');
 require_once($CFG->dirroot . '/blocks/grade_overview/lib.php');
-require_login();
 
 /**
  * Class block grade new view.
@@ -78,7 +76,7 @@ class block_grade_overview extends block_base {
         $this->content->text = '<div class="row card-deck">';
 
         $outputhtml = '';
-        if ($COURSE->id > 1) {
+        if ($COURSE->id > SITEID) {
             // Load grade.
             $grade = new stdClass();
             $grade->courseid = $COURSE->id;
@@ -86,7 +84,7 @@ class block_grade_overview extends block_base {
             $grade->config = $this->config;
             $SESSION->grade = $grade;
 
-            $coursedata = get_course_activities($COURSE->id);
+            $coursedata = grade_overview_get_course_activities($COURSE->id);
             $activities = $coursedata['activities'];
             $atvscheck = array();
             foreach ($activities as $activity) {
@@ -101,11 +99,9 @@ class block_grade_overview extends block_base {
             // If teacher.
             $context = \context_course::instance($COURSE->id, MUST_EXIST);
             if (has_capability('moodle/course:viewhiddenactivities', $context, $USER->id)) {
-                $outputhtml .= get_view_editor($COURSE, $this->instance->id, $atvscheck, $showcheck);
+                $outputhtml .= grade_overview_get_view_editor($COURSE, $this->instance->id, $atvscheck, $showcheck);
             } else {
-                $outputhtml .= get_view_student($USER, $COURSE, $atvscheck,
-                        $this->config->calc, $this->config->decimal_places,
-                        $this->config->desription, $showcheck, $shownameuser);
+                $outputhtml .= grade_overview_get_view_student($USER, $COURSE, $atvscheck, $grade, $showcheck, $shownameuser);
             }
         }
 

@@ -89,7 +89,7 @@ class block_grade_overview_edit_form extends block_edit_form {
         $mform->addHelpButton('config_decimal_places', 'config_decimal_places', 'block_grade_overview');
 
         /* Enable/Disable by activity or section */
-        $coursedata = get_course_activities($COURSE->id);
+        $coursedata = grade_overview_get_course_activities($COURSE->id);
         $activities = $coursedata['activities'];
         foreach ($activities as $activity) {
             $attributes = ['class' => 'iconlarge activityicon'];
