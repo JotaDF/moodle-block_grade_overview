@@ -87,8 +87,13 @@ if (isset($SESSION->grade)) {
 
         $outputhtml .= '</tr>';
         foreach ($users as $userx) {
+            $userpictureparams = array('size' => 30, 'link' => false, 'alt' => 'User');
+            $userpicture = $OUTPUT->user_picture($userx, $userpictureparams);
             $outputhtml .= '<tr class="">';
-            $outputhtml .= '<td class="cell c0" style="">' . $userx->firstname . ' ' . $userx->lastname . '</td>';
+            $outputhtml .= '<td class="cell c0" style="">'
+                    . '<a class="username" href="' . $CFG->wwwroot . '/user/view.php?id='
+                    . $userx->id . '&amp;course=' . $courseid . '">'
+                    . $userpicture . $userx->firstname . ' ' . $userx->lastname . '</a></td>';
             $count = 1;
             $max = count($atvscheck);
             $countx = 0;
