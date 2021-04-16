@@ -273,7 +273,6 @@ function grade_overview_get_view_student($user, $course, $atvscheck, $grade, $sh
     $sum = 0;
     $taller = 0;
     $decimal = 2;
-    $totalatv = count($atvscheck);
     foreach ($atvscheck as $atv) {
         $gradeuser = grade_overview_get_user_mod_grade($user->id, $atv['instance'], $atv['type'], $course->id);
         $imgcheck = '';
