@@ -140,9 +140,11 @@ if (isset($SESSION->grade)) {
                 $outputhtml .= '<td class="cell c' . $count . ' '
                         . $last . ' text-center" style=""><strong>' . number_format($final, $decimal, '.', '')
                         . '</strong></td>';
-            } elseif ($calc > 0){
-                $outputhtml .= '<td class="cell c' . $count . ' '
-                        . $last . ' text-center" style=""><strong> - </strong></td>';
+            } else {
+                if ($calc > 0) {
+                    $outputhtml .= '<td class="cell c' . $count . ' '
+                            . $last . ' text-center" style=""><strong> - </strong></td>';
+                }
             }
             $outputhtml .= '</tr>';
         }
