@@ -23,6 +23,7 @@
  */
 
 $string['config_title'] = 'Título do bloco';
+$string['privacy:metadata'] = 'O Bloco Visão Geral de Notas não armazena nenhum dado pessoal e é projetado para exibir dados já existentes.';
 $string['config_title_help'] = 'Definir um título personalizado para o bloco.';
 $string['config_desription'] = 'Descrição';
 $string['config_desription_help'] = 'Campo para uma mensagem personalizada que aparecerá na base do bloco.';

@@ -15,17 +15,34 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details
+ * Privacy Subsystem implementation for block_grade_overview.
  *
  * @package    block_grade_overview
- * @copyright  José Wilson <j.wilson.df@gmail.com>
+ * @copyright  2021 José Wilson <j.wilson.df@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace block_grade_overview\privacy;
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2021040839;        // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2017102500;        // Requires this Moodle version.
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release  = 'Version for Moodle 3.4 onwards';
-$plugin->component = 'block_grade_overview'; // Full name of the plugin (used for diagnostics).
+/**
+ * Privacy Subsystem implementation for block_grade_overview.
+ *
+ * @copyright  2021 José Wilson <j.wilson.df@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class provider implements
+    // This plugin does not store any personal user data.
+    \core_privacy\local\metadata\null_provider {
+
+    /**
+     * Get the language string identifier with the component's language
+     * file to explain why this plugin stores no data.
+     *
+     * @return  string
+     */
+    public static function get_reason() : string {
+        return 'privacy:metadata';
+    }
+}

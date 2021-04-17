@@ -23,6 +23,7 @@
  */
 
 $string['config_title'] = 'Block title';
+$string['privacy:metadata'] = 'The Grade Overview Block does not store any personal data and is designed to display existing data.';
 $string['config_title_help'] = 'Define a custom title for the block.';
 $string['config_desription'] = 'Desription';
 $string['config_desription_help'] = 'Field for a personalized message that will appear at the bottom of the block.';
