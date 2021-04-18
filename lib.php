@@ -249,8 +249,8 @@ function grade_overview_get_view_student($user, $course, $atvscheck, $grade, $sh
     if (isset($grade->config->calc)) {
         $calc = $grade->config->calc;
     }
-    $decimalplaces = 0;
-    if (isset($grade->config->decimalplaces)) {
+    $decimalplaces = 2;
+    if (isset($grade->config->decimal_places)) {
         $decimalplaces = $grade->config->decimal_places;
     }
     $desription = "";
