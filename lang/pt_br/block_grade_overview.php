@@ -68,3 +68,4 @@ $string['pluginname'] = 'Visão geral de notas';
 
 $string['grade_overview:addinstance'] = 'Adcionar novo bloco Visão Geral de Notas';
 $string['grade_overview:myaddinstance'] = 'Adcionar novo bloco Visão Geral de Notas na sua Moodle page';
+$string['grade_overview:view'] = 'Visão detalhada do bloco Grade Overview';

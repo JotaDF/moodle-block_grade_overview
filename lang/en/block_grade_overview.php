@@ -67,4 +67,6 @@ $string['pluginname'] = 'Grade overview';
 
 $string['grade_overview:addinstance'] = 'Add new Grade Overview block';
 $string['grade_overview:myaddinstance'] = 'Add new Grade Overview block on your Moodle page';
+$string['grade_overview:view'] = 'Detailed view of the Grade Overview block';
+
 
