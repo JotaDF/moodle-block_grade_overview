@@ -66,3 +66,5 @@ $string['quiz:myaddinstance'] = 'Adcionar novo bloco Notas Questionário na sua 
 
 $string['pluginname'] = 'Visão geral de notas';
 
+$string['block_game:addinstance'] = 'Adcionar novo bloco Visão Geral de Notas';
+$string['block_game:myaddinstance'] = 'Adcionar novo bloco Visão Geral de Notas na sua Moodle page';

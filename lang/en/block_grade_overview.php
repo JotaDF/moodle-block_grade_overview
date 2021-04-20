@@ -65,4 +65,6 @@ $string['quiz:addinstance'] = 'Add a new Quiz Notes';
 $string['quiz:myaddinstance'] = 'Add a new Quiz Notes to my moodle';
 $string['pluginname'] = 'Grade overview';
 
+$string['block_game:addinstance'] = 'Add new Grade Overview block';
+$string['block_game:myaddinstance'] = 'Add new Grade Overview block on your Moodle page';
 
