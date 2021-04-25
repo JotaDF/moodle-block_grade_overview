@@ -84,7 +84,7 @@ class block_grade_overview extends block_base {
             $grade->config = $this->config;
             $SESSION->grade = $grade;
 
-            $coursedata = grade_overview_get_course_activities($COURSE->id);
+            $coursedata = block_grade_overview_get_course_activities($COURSE->id);
             $activities = $coursedata['activities'];
             $atvscheck = array();
             foreach ($activities as $activity) {
@@ -99,9 +99,9 @@ class block_grade_overview extends block_base {
             // If teacher.
             $context = \context_course::instance($COURSE->id, MUST_EXIST);
             if (has_capability('moodle/course:viewhiddenactivities', $context, $USER->id)) {
-                $outputhtml .= grade_overview_get_view_editor($COURSE, $this->instance->id, $atvscheck, $showcheck);
+                $outputhtml .= block_grade_overview_get_view_editor($COURSE, $this->instance->id, $atvscheck, $showcheck);
             } else {
-                $outputhtml .= grade_overview_get_view_student($USER, $COURSE, $atvscheck, $grade, $showcheck, $shownameuser);
+                $outputhtml .= block_grade_overview_get_view_student($USER, $COURSE, $atvscheck, $grade, $showcheck, $shownameuser);
             }
         }
 

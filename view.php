@@ -47,7 +47,7 @@ $outputhtml = '<div class="view">';
 $grade = new stdClass();
 if (isset($SESSION->grade)) {
     $grade = $SESSION->grade;
-    $coursedata = grade_overview_get_course_activities($courseid);
+    $coursedata = block_grade_overview_get_course_activities($courseid);
     $activities = $coursedata['activities'];
     $atvscheck = array();
     foreach ($activities as $index => $activity) {
@@ -63,7 +63,7 @@ if (isset($SESSION->grade)) {
         if (isset($grade->config->calc) && $grade->config->calc > 0) {
             $calc = $grade->config->calc;
         }
-        $users = grade_overview_get_students_course($courseid);
+        $users = block_grade_overview_get_students_course($courseid);
         $outputhtml .= '<table class="generaltable" id="notas">';
         $outputhtml .= '<tr class="">';
         $outputhtml .= '<td class="cell c0" style=""><strong>' . get_string('name') . '</strong></td>';
@@ -101,7 +101,7 @@ if (isset($SESSION->grade)) {
             $taller = 0;
             $decimal = 2;
             foreach ($atvscheck as $atv) {
-                $gradeuser = grade_overview_get_user_mod_grade($userx->id, $atv['instance'], $atv['type'], $courseid);
+                $gradeuser = block_grade_overview_get_user_mod_grade($userx->id, $atv['instance'], $atv['type'], $courseid);
                 $last = '';
                 if ($count == $max) {
                     $last = 'lastcol';

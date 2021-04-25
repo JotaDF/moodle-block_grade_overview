@@ -24,6 +24,7 @@
 use core_competency\api as competency_api;
 
 defined('MOODLE_INTERNAL') || die();
+require_once($CFG->libdir.'/gradelib.php');
 
 /**
  * Return grade atv of user.
@@ -34,7 +35,7 @@ defined('MOODLE_INTERNAL') || die();
  * @param int $itemtype
  * @return mixed
  */
-function grade_overview_get_grade_activity($courseid, $userid, $iteminstance, $itemtype) {
+function block_grade_overview_get_grade_activity($courseid, $userid, $iteminstance, $itemtype) {
     global $DB;
     if ($courseid > 1) {
         $sql = "SELECT i.itemname,g.userid,g.finalgrade "
@@ -61,7 +62,7 @@ function grade_overview_get_grade_activity($courseid, $userid, $iteminstance, $i
  * @param int $itemtype
  * @return int
  */
-function grade_overview_get_count_atv_all($courseid, $iteminstance, $itemtype) {
+function block_grade_overview_get_count_atv_all($courseid, $iteminstance, $itemtype) {
     global $DB;
     if ($courseid > 1) {
         $sql = "SELECT count(*) as total "
@@ -86,7 +87,7 @@ function grade_overview_get_count_atv_all($courseid, $iteminstance, $itemtype) {
  * @param int $courseid
  * @return int
  */
-function grade_overview_count_students_course($courseid) {
+function block_grade_overview_count_students_course($courseid) {
     global $DB;
     if ($courseid > 1) {
         $sql = "SELECT count(*) total FROM {role_assignments} rs"
@@ -107,7 +108,7 @@ function grade_overview_count_students_course($courseid) {
  * @param int $courseid
  * @return mixed
  */
-function grade_overview_get_students_course($courseid) {
+function block_grade_overview_get_students_course($courseid) {
     global $DB;
     if ($courseid > 1) {
         $sql = "SELECT u.* FROM {role_assignments} rs"
@@ -128,7 +129,7 @@ function grade_overview_get_students_course($courseid) {
  * @param int $courseid
  * @return int
  */
-function grade_overview_count_students_accessed_course($courseid) {
+function block_grade_overview_count_students_accessed_course($courseid) {
     global $DB;
     if ($courseid > 1) {
         $sql = "SELECT count(*) total FROM {role_assignments} rs"
@@ -151,7 +152,7 @@ function grade_overview_count_students_accessed_course($courseid) {
  * @throws coding_exception
  * @throws moodle_exception
  */
-function grade_overview_get_course_activities($courseid) {
+function block_grade_overview_get_course_activities($courseid) {
     $modinfo = get_fast_modinfo($courseid, -1);
     $sections = $modinfo->get_sections();
     $activities = array();
@@ -182,7 +183,7 @@ function grade_overview_get_course_activities($courseid) {
             }
         }
     }
-    usort($activities, 'grade_overview_compare_activities');
+    usort($activities, 'block_grade_overview_compare_activities');
     return array('activities' => $activities, 'types' => $types, 'ids' => $ids);
 }
 
@@ -193,7 +194,7 @@ function grade_overview_get_course_activities($courseid) {
  * @param array $b array of event information
  * @return mixed <0, 0 or >0 depending on order of activities/resources on course page
  */
-function grade_overview_compare_activities($a, $b) {
+function block_grade_overview_compare_activities($a, $b) {
     if ($a['section'] != $b['section']) {
         return $a['section'] - $b['section'];
     } else {
@@ -208,7 +209,7 @@ function grade_overview_compare_activities($a, $b) {
  * @param \stdClass $course
  * @return doudle
  */
-function grade_overview_user_course_progress($user, $course) {
+function block_grade_overview_user_course_progress($user, $course) {
     global $USER;
     $percentage = 0;
     if (($USER->id !== $user->id) && !is_siteadmin($USER->id)) {
@@ -242,7 +243,7 @@ function grade_overview_user_course_progress($user, $course) {
  * @param boolean $shownameuser
  * @return string
  */
-function grade_overview_get_view_student($user, $course, $atvscheck, $grade, $showcheck, $shownameuser) {
+function block_grade_overview_get_view_student($user, $course, $atvscheck, $grade, $showcheck, $shownameuser) {
     global $CFG;
     $outputhtml = '';
     $calc = 0;
@@ -274,7 +275,7 @@ function grade_overview_get_view_student($user, $course, $atvscheck, $grade, $sh
     $taller = 0;
     $decimal = 2;
     foreach ($atvscheck as $atv) {
-        $gradeuser = grade_overview_get_user_mod_grade($user->id, $atv['instance'], $atv['type'], $course->id);
+        $gradeuser = block_grade_overview_get_user_mod_grade($user->id, $atv['instance'], $atv['type'], $course->id);
         $imgcheck = '';
         if ($showcheck) {
             $imgcheck = '<img title="' . get_string('grade_pending', 'block_grade_overview') . '" src="'
@@ -338,7 +339,7 @@ function grade_overview_get_view_student($user, $course, $atvscheck, $grade, $sh
  * @param boolean $showcheck
  * @return string
  */
-function grade_overview_get_view_editor($course, $instanceid, $atvscheck, $showcheck) {
+function block_grade_overview_get_view_editor($course, $instanceid, $atvscheck, $showcheck) {
     global $CFG;
     $outputhtml = '<table class="generaltable" id="notas">';
     $outputhtml .= '<tr class="">';
@@ -349,9 +350,9 @@ function grade_overview_get_view_editor($course, $instanceid, $atvscheck, $showc
             . '<i class="icon fa fa-user fa-fw " aria-hidden="true"></i><br/>'
             . get_string('students', 'block_grade_overview') . '</td>';
     $outputhtml .= '</tr>';
-    $totalstundents = grade_overview_count_students_course($course->id);
+    $totalstundents = block_grade_overview_count_students_course($course->id);
     foreach ($atvscheck as $atv) {
-        $totalatv = grade_overview_get_count_atv_all($course->id, $atv['instance'], $atv['type']);
+        $totalatv = block_grade_overview_get_count_atv_all($course->id, $atv['instance'], $atv['type']);
         $imgcheck = '';
         if ($showcheck) {
             $imgcheck = '<img title="' . get_string('grade_pending', 'block_grade_overview') . '" src="'
@@ -368,7 +369,7 @@ function grade_overview_get_view_editor($course, $instanceid, $atvscheck, $showc
                 . $totalatv . '/' . $totalstundents . '</td>';
         $outputhtml .= '</tr>';
     }
-    $totalaccess = grade_overview_count_students_accessed_course($course->id);
+    $totalaccess = block_grade_overview_count_students_accessed_course($course->id);
     $outputhtml .= '<tr class="">';
     $outputhtml .= '<td class="cell c0 " style=""><strong>'
             . '<i class="icon fa fa-user fa-lg" aria-hidden="true"></i>'
@@ -394,7 +395,7 @@ function grade_overview_get_view_editor($course, $instanceid, $atvscheck, $showc
  * @param int $courseid
  * @return int
  */
-function grade_overview_get_user_mod_grade($userid, $instanceid, $type, $courseid) {
+function block_grade_overview_get_user_mod_grade($userid, $instanceid, $type, $courseid) {
     $gradebookgrades = \grade_get_grades($courseid, 'mod', $type, $instanceid, $userid);
     if (isset($gradebookgrades->items)) {
         $gradebookitem = array_shift($gradebookgrades->items);
