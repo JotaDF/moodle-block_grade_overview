@@ -92,16 +92,18 @@ class block_grade_overview_edit_form extends block_edit_form {
         $coursedata = block_grade_overview_get_course_activities($COURSE->id);
         $activities = $coursedata['activities'];
         foreach ($activities as $activity) {
-            $attributes = ['class' => 'iconlarge activityicon'];
-            $icon = $OUTPUT->pix_icon('icon', $activity['modulename'], $activity['type'], $attributes);
-            $activityoption = array();
-            $activityoption[] = & $mform->createElement(
-                            'advcheckbox', 'config_atv' . $activity['id'], '', null, null, array(0, $activity['id'])
-            );
-            $mform->addGroup(
-                    $activityoption, 'config_activity_' . $activity['id'],
-                    $icon . format_string($activity['name']), array(' '), false
-            );
+            if (block_grade_overview_is_visibled_module($COURSE->id, $activity['id'])) {
+                $attributes = ['class' => 'iconlarge activityicon'];
+                $icon = $OUTPUT->pix_icon('icon', $activity['modulename'], $activity['type'], $attributes);
+                $activityoption = array();
+                $activityoption[] = & $mform->createElement(
+                                'advcheckbox', 'config_atv' . $activity['id'], '', null, null, array(0, $activity['id'])
+                );
+                $mform->addGroup(
+                        $activityoption, 'config_activity_' . $activity['id'],
+                        $icon . format_string($activity['name']), array(' '), false
+                );
+            }
         }
     }
 

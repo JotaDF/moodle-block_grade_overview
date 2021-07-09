@@ -409,3 +409,23 @@ function block_grade_overview_get_user_mod_grade($userid, $instanceid, $type, $c
     }
     return false;
 }
+
+/**
+ * Validates module is visibled.
+ *
+ * @param string $courseid id course.
+ * @param string $cmid id module.
+ * @return true|false
+ */
+function block_grade_overview_is_visibled_module($courseid, $cmid) {
+    global $DB;
+    $sql = "SELECT COUNT(id) AS total FROM {course_modules} "
+         . "WHERE course= :courseid AND id= :cmid AND completion > 0 AND deletioninprogress = 0";
+    $params['courseid'] = $courseid;
+    $params['cmid'] = $cmid;
+    $countatv = $DB->get_record_sql($sql, $params);
+    if ($countatv->total > 0) {
+        return true;
+    }
+    return false;
+}
