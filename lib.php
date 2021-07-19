@@ -94,7 +94,8 @@ function block_grade_overview_count_students_course($courseid) {
                 . " INNER JOIN {user} u ON u.id=rs.userid"
                 . " INNER JOIN {context} e ON rs.contextid=e.id"
                 . " INNER JOIN {course} c ON c.id=e.instanceid"
-                . " WHERE e.contextlevel=50 AND rs.roleid=5 AND c.id= :courseid";
+                . " INNER JOIN {role} r ON r.id=rs.roleid"
+                . " WHERE e.contextlevel=50 AND r.archetype = 'student' AND c.id= :courseid";
         $params['courseid'] = $courseid;
         $busca = $DB->get_record_sql($sql, $params);
         return $busca->total;
@@ -115,7 +116,8 @@ function block_grade_overview_get_students_course($courseid) {
                 . " INNER JOIN {user} u ON u.id=rs.userid"
                 . " INNER JOIN {context} e ON rs.contextid=e.id"
                 . " INNER JOIN {course} c ON c.id=e.instanceid"
-                . " WHERE e.contextlevel=50 AND rs.roleid=5 AND c.id=:courseid";
+                . " INNER JOIN {role} r ON r.id=rs.roleid"
+                . " WHERE e.contextlevel=50 AND r.archetype = 'student' AND c.id=:courseid";
         $params['courseid'] = $courseid;
         $rs = $DB->get_records_sql($sql, $params);
         return $rs;
@@ -137,7 +139,8 @@ function block_grade_overview_count_students_accessed_course($courseid) {
                 . " INNER JOIN {context} e ON rs.contextid=e.id"
                 . " INNER JOIN {course} c ON c.id=e.instanceid"
                 . " INNER JOIN {user_lastaccess} ul ON ul.userid=u.id AND ul.courseid =c.id"
-                . " WHERE e.contextlevel=50 AND rs.roleid=5 AND c.id=?";
+                . " INNER JOIN {role} r ON r.id=rs.roleid"
+                . " WHERE e.contextlevel=50 AND r.archetype = 'student' AND c.id=?";
         $busca = $DB->get_record_sql($sql, array($courseid));
         return $busca->total;
     }
