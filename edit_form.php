@@ -62,14 +62,16 @@ class block_grade_overview_edit_form extends block_edit_form {
         $mform->addElement('selectyesno', 'config_show_check', get_string('config_show_check', 'block_grade_overview'));
         $mform->setDefault('config_show_check', 1);
         $mform->addHelpButton('config_show_check', 'config_show_check', 'block_grade_overview');
-        
+
         // Control visibility check activity.
-        $mform->addElement('selectyesno', 'config_show_report_completion', get_string('config_show_report_completion', 'block_grade_overview'));
+        $mform->addElement('selectyesno', 'config_show_report_completion',
+                get_string('config_show_report_completion', 'block_grade_overview'));
         $mform->setDefault('config_show_report_completion', 1);
         $mform->addHelpButton('config_show_report_completion', 'config_show_report_completion', 'block_grade_overview');
-        
+
         // Control visibility check activity.
-        $mform->addElement('selectyesno', 'config_show_report_grade', get_string('config_show_report_grade', 'block_grade_overview'));
+        $mform->addElement('selectyesno', 'config_show_report_grade',
+                get_string('config_show_report_grade', 'block_grade_overview'));
         $mform->setDefault('config_show_report_grade', 1);
         $mform->addHelpButton('config_show_report_grade', 'config_show_report_grade', 'block_grade_overview');
 

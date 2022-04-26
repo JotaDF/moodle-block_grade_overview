@@ -419,7 +419,7 @@ function block_grade_overview_get_view_editor($course, $instanceid, $atvscheck, 
         . get_string('completion_view', 'block_grade_overview') . '</a>  ';
 
         if ($showreportgrade) {
-            $outputhtml .=  ' | ';
+            $outputhtml .= ' | ';
         }
     }
     if ($showreportgrade) {
