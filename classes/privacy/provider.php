@@ -24,8 +24,6 @@
 
 namespace block_grade_overview\privacy;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Privacy Subsystem implementation for block_grade_overview.
  *

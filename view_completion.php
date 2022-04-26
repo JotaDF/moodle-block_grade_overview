@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -59,9 +58,10 @@ if (isset($SESSION->grade)) {
     // If teacher.
     $context = \context_course::instance($courseid, MUST_EXIST);
     if (has_capability('block/grade_overview:view', $blockcontext, $USER->id)) {
-        $outputhtml .= groups_print_course_menu($course, '/blocks/grade_overview/view_completion.php?id=' . $courseid . '&instanceid=' . $id);
-        
-        echo $OUTPUT->download_dataformat_selector(get_string('downloadthis', 'block_grade_overview'), 'download.php', 'dataformat', ['id' => $courseid, 'instanceid' => $id, 'group' => $groupid, 'op' => 'c']);
+        $outputhtml .= groups_print_course_menu($course, '/blocks/grade_overview/view_completion.php?id=' . $courseid
+                . '&instanceid=' . $id);
+        echo $OUTPUT->download_dataformat_selector(get_string('downloadthis', 'block_grade_overview'), 'download.php',
+                'dataformat', ['id' => $courseid, 'instanceid' => $id, 'group' => $groupid, 'op' => 'c']);
 
         $calc = 0;
         if (isset($grade->config->calc) && $grade->config->calc > 0) {
@@ -70,9 +70,12 @@ if (isset($SESSION->grade)) {
         $users = block_grade_overview_get_students_course($courseid, $groupid);
         $outputhtml .= '<table class="generaltable table-bordered" id="notas">';
         $outputhtml .= '<tr style="vertical-align:baseline; height: 280px;">';
-        $outputhtml .= '<td class="cell" scope="col" style="vertical-align: bottom;"><strong>' . get_string('name') . '</strong></td>';
-        $outputhtml .= '<td class="cell" scope="col" style="vertical-align: bottom;"><strong>' . get_string('email') . '</strong></td>';
-        $outputhtml .= '<td class="cell" scope="col" style="vertical-align: bottom;"><strong>' . get_string('group') . '</strong></td>';
+        $outputhtml .= '<td class="cell" scope="col" style="vertical-align: bottom;"><strong>' . get_string('name')
+                . '</strong></td>';
+        $outputhtml .= '<td class="cell" scope="col" style="vertical-align: bottom;"><strong>' . get_string('email')
+                . '</strong></td>';
+        $outputhtml .= '<td class="cell" scope="col" style="vertical-align: bottom;"><strong>' . get_string('group')
+                . '</strong></td>';
         $count = 1;
         $max = count($atvscheck);
         foreach ($atvscheck as $atv) {
@@ -86,7 +89,9 @@ if (isset($SESSION->grade)) {
             }
             $outputhtml .= '<td class="cell text-center" scope="col" style="vertical-align: bottom;">'
                     . '<a href="' . $atv['url']
-                    . '"><div class="rotated-text-container" style="display: inline-block; width: 26px;"><span style="display: inline-block;  white-space: nowrap; transform: translate(0, 100%) rotate(-90deg); transform-origin: 0 0; vertical-align: bottom;">'
+                    . '"><div class="rotated-text-container" style="display: inline-block; width: 26px;">'
+                    . '<span style="display: inline-block;  white-space: nowrap; transform: translate(0, 100%) rotate(-90deg);'
+                    . ' transform-origin: 0 0; vertical-align: bottom;">'
                     . $icon . shorten_text($atv['name']) . '</span></div></a></td>';
             $count++;
         }
@@ -124,7 +129,6 @@ if (isset($SESSION->grade)) {
             $taller = 0;
             $decimal = 2;
             foreach ($atvscheck as $atv) {
-                //print_r($atv);
                 $gradeuser = block_grade_overview_get_user_mod_grade($userx->id, $atv['instance'], $atv['type'], $courseid);
                 $completedmod = block_grade_overview_is_completed_module($userx->id, $courseid, $atv['id']);
 

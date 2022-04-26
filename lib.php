@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -108,6 +107,7 @@ function block_grade_overview_count_students_course($courseid) {
  * Return users of course.
  *
  * @param int $courseid
+ * @param int $groupid
  * @return mixed
  */
 function block_grade_overview_get_students_course($courseid, $groupid = 0) {
@@ -347,20 +347,21 @@ function block_grade_overview_get_view_student($user, $course, $atvscheck, $grad
  * @param int $instanceid
  * @param array $atvscheck
  * @param boolean $showcheck
+ * @param int $grade
  * @return string
  */
 function block_grade_overview_get_view_editor($course, $instanceid, $atvscheck, $showcheck, $grade) {
     global $CFG, $USER;
-    
-    $show_report_completion = false;
+
+    $showreportcompletion = false;
     if (isset($grade->config->show_report_completion)) {
-        $show_report_completion = $grade->config->show_report_completion;
+        $showreportcompletion = $grade->config->show_report_completion;
     }
-    $show_report_grade = false;
+    $showreportgrade = false;
     if (isset($grade->config->show_report_grade)) {
-        $show_report_grade = $grade->config->show_report_grade;
+        $showreportgrade = $grade->config->show_report_grade;
     }
-    
+
     $outputhtml = '<table class="generaltable" id="notas">';
     $outputhtml .= '<tr class="">';
     $outputhtml .= '<td class="cell c0 small" style="">'
@@ -398,7 +399,7 @@ function block_grade_overview_get_view_editor($course, $instanceid, $atvscheck, 
             . ($totalstundents - $totalaccess) . '</strong></td>';
     $outputhtml .= '</tr>';
     $outputhtml .= '</table>';
-    
+
     // Search user group.
     $groupid = 0;
     if ($course->groupmode == 1 || $course->groupmode == 2) {
@@ -410,25 +411,25 @@ function block_grade_overview_get_view_editor($course, $instanceid, $atvscheck, 
     $linkgroup = '&group=' . $groupid;
 
     $outputhtml .= '<hr/><div class="w-100 text-right small">';
-    if($show_report_completion){
-        $outputhtml .=  '<a href="'
+    if ($showreportcompletion) {
+        $outputhtml .= '<a href="'
         . $CFG->wwwroot . '/blocks/grade_overview/view_completion.php?id='
         . $course->id . '&instanceid=' . $instanceid . $linkgroup
         . '"><i class="icon fa fa-check-square fa-lg " aria-hidden="true"></i>'
         . get_string('completion_view', 'block_grade_overview') . '</a>  ';
-        
-        if($show_report_grade){
+
+        if ($showreportgrade) {
             $outputhtml .=  ' | ';
         }
     }
-    if($show_report_grade){
-        $outputhtml .=  '<a href="'
+    if ($showreportgrade) {
+        $outputhtml .= '<a href="'
             . $CFG->wwwroot . '/blocks/grade_overview/view.php?id='
             . $course->id . '&instanceid=' . $instanceid . $linkgroup
             . '"><i class="icon fa fa-table fa-lg " aria-hidden="true"></i>'
             . get_string('detailed_view', 'block_grade_overview') . '</a>';
     }
-    $outputhtml .=  '</div>';
+    $outputhtml .= '</div>';
 
     return $outputhtml;
 }

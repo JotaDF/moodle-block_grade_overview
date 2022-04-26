@@ -61,8 +61,9 @@ if (isset($SESSION->grade)) {
     $context = \context_course::instance($courseid, MUST_EXIST);
     if (has_capability('block/grade_overview:view', $blockcontext, $USER->id)) {
         $outputhtml .= groups_print_course_menu($course, '/blocks/grade_overview/view.php?id=' . $courseid . '&instanceid=' . $id);
-        
-        echo $OUTPUT->download_dataformat_selector(get_string('downloadthis', 'block_grade_overview'), 'download.php', 'dataformat', ['id' => $courseid, 'instanceid' => $id, 'group' => $groupid, 'op' => 'd']);
+
+        echo $OUTPUT->download_dataformat_selector(get_string('downloadthis', 'block_grade_overview'), 'download.php',
+                'dataformat', ['id' => $courseid, 'instanceid' => $id, 'group' => $groupid, 'op' => 'd']);
         $calc = 0;
         if (isset($grade->config->calc) && $grade->config->calc > 0) {
             $calc = $grade->config->calc;
