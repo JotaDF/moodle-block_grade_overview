@@ -76,7 +76,7 @@ class block_grade_overview extends block_base {
         $this->content->text = '<div class="row card-deck">';
 
         $outputhtml = '';
-        if ($COURSE->id > SITEID) {
+        if ($COURSE->id != SITEID) {
             // Load grade.
             $grade = new stdClass();
             $grade->courseid = $COURSE->id;
@@ -99,7 +99,7 @@ class block_grade_overview extends block_base {
             // If teacher.
             $context = \context_course::instance($COURSE->id, MUST_EXIST);
             if (has_capability('moodle/course:viewhiddenactivities', $context, $USER->id)) {
-                $outputhtml .= block_grade_overview_get_view_editor($COURSE, $this->instance->id, $atvscheck, $showcheck);
+                $outputhtml .= block_grade_overview_get_view_editor($COURSE, $this->instance->id, $atvscheck, $showcheck, $grade);
             } else {
                 $outputhtml .= block_grade_overview_get_view_student($USER, $COURSE, $atvscheck, $grade, $showcheck, $shownameuser);
             }

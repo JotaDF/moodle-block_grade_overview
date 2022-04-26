@@ -35,6 +35,13 @@ $string['config_decimal_places'] = 'Casas decimais';
 $string['config_decimal_places_help'] = 'Selecione a quantidade de casas decimais que as notas seram mostradas.';
 $string['config_show_check'] = 'Mostrar check';
 $string['config_show_check_help'] = 'Mostrar check nas atividades que receberam nota.';
+
+$string['config_show_report_completion'] = 'Mostrar relatório de conclusão de atividades e notas';
+$string['config_show_report_completion_help'] = 'Mostrar opção de vizualiação do relatório de conclusão de atividades e notas.';
+
+$string['config_show_report_grade'] = 'Mostrar relatório detalhado de notas';
+$string['config_show_report_grade_help'] = 'Mostrar opção de vizualiação do relatório detalhado de notas.';
+
 $string['config_show_progress_bar'] = 'Mostrar barra de progresso do curso';
 $string['config_show_progress_bar_help'] = 'Mostrar barra com o percentual de progresso do curso.';
 $string['config_select_activitys'] = '<legend>Selecione as atividades que compõem a avalição e deverão ser exibidas no bloco</legend>';
@@ -55,7 +62,8 @@ $string['students'] = 'Alunos';
 $string['activity'] = 'Atividades';
 $string['assessments'] = 'Avaliações';
 $string['never_access'] = 'Nunca acessaram o curso';
-$string['detailed_view'] = 'Visão detalhada';
+$string['detailed_view'] = 'Relatório de nontas';
+$string['completion_view'] = 'Relatório de conclusão';
 
 $string['descconfig'] = 'Configurações gerais do bloco';
 $string['descfoo'] = 'Configurações do Bloco';
@@ -66,6 +74,10 @@ $string['quiz:myaddinstance'] = 'Adcionar novo bloco Notas Questionário na sua 
 
 $string['pluginname'] = 'Visão geral de notas';
 
+$string['completion_report'] = 'Relatório de conclusão e notas';
+
 $string['grade_overview:addinstance'] = 'Adcionar novo bloco Visão Geral de Notas';
 $string['grade_overview:myaddinstance'] = 'Adcionar novo bloco Visão Geral de Notas na sua Moodle page';
 $string['grade_overview:view'] = 'Visão detalhada do bloco Grade Overview';
+
+$string['downloadthis'] = 'Salvar como';

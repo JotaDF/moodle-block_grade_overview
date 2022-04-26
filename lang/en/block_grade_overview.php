@@ -35,6 +35,13 @@ $string['config_decimal_places'] = 'Decimal places';
 $string['config_decimal_places_help'] = 'Select the number of decimal places that the notes will be shown.';
 $string['config_show_check'] = 'Show check';
 $string['config_show_check_help'] = 'Show check on activities that received a grade.';
+
+$string['config_show_report_completion'] = 'Show activity completion report and grades';
+$string['config_show_report_completion_help'] = 'Show option to view the report of completion of activities and grades.';
+
+$string['config_show_report_grade'] = 'Show detailed grade report';
+$string['config_show_report_grade_help'] = 'Show option to view detailed grade report.';
+
 $string['config_show_progress_bar'] = 'Show course progress bar';
 $string['config_show_progress_bar_help'] = 'Show bar with the percentage of course progress.';
 $string['config_select_activitys'] = '<legend>Select the activities that make up the assessment and should be displayed in the block</legend>';
@@ -55,7 +62,8 @@ $string['students'] = 'Students';
 $string['activity'] = 'Activities';
 $string['assessments'] = 'Assessments';
 $string['never_access'] = 'Never accessed the course';
-$string['detailed_view'] = 'Detailed view';
+$string['detailed_view'] = 'Detailed report';
+$string['completion_view'] = 'Completion report';
 
 $string['descconfig'] = 'Description of the config section';
 $string['descfoo'] = 'Config description';
@@ -65,6 +73,10 @@ $string['quiz:addinstance'] = 'Add a new Quiz Notes';
 $string['quiz:myaddinstance'] = 'Add a new Quiz Notes to my moodle';
 $string['pluginname'] = 'Grade overview';
 
+$string['completion_report'] = 'Completion report and grades';
+
 $string['grade_overview:addinstance'] = 'Add new Grade Overview block';
 $string['grade_overview:myaddinstance'] = 'Add new Grade Overview block on your Moodle page';
 $string['grade_overview:view'] = 'Detailed view of the Grade Overview block';
+
+$string['downloadthis'] = 'Download as';

@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -24,7 +25,7 @@
 use core_competency\api as competency_api;
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->libdir.'/gradelib.php');
+require_once($CFG->libdir . '/gradelib.php');
 
 /**
  * Return grade atv of user.
@@ -109,15 +110,21 @@ function block_grade_overview_count_students_course($courseid) {
  * @param int $courseid
  * @return mixed
  */
-function block_grade_overview_get_students_course($courseid) {
+function block_grade_overview_get_students_course($courseid, $groupid = 0) {
     global $DB;
     if ($courseid > 1) {
+        $wheregroup = "";
+        if ($groupid > 0) {
+            $wheregroup = " AND u.id IN(SELECT userid FROM {groups_members} WHERE groupid=:groupid) ";
+            $params['groupid'] = $groupid;
+        }
         $sql = "SELECT u.* FROM {role_assignments} rs"
                 . " INNER JOIN {user} u ON u.id=rs.userid"
                 . " INNER JOIN {context} e ON rs.contextid=e.id"
                 . " INNER JOIN {course} c ON c.id=e.instanceid"
                 . " INNER JOIN {role} r ON r.id=rs.roleid"
-                . " WHERE e.contextlevel=50 AND r.archetype = 'student' AND c.id=:courseid";
+                . " WHERE e.contextlevel=50 AND r.archetype = 'student' AND c.id=:courseid " . $wheregroup
+                . " ORDER BY u.firstname ";
         $params['courseid'] = $courseid;
         $rs = $DB->get_records_sql($sql, $params);
         return $rs;
@@ -342,8 +349,18 @@ function block_grade_overview_get_view_student($user, $course, $atvscheck, $grad
  * @param boolean $showcheck
  * @return string
  */
-function block_grade_overview_get_view_editor($course, $instanceid, $atvscheck, $showcheck) {
-    global $CFG;
+function block_grade_overview_get_view_editor($course, $instanceid, $atvscheck, $showcheck, $grade) {
+    global $CFG, $USER;
+    
+    $show_report_completion = false;
+    if (isset($grade->config->show_report_completion)) {
+        $show_report_completion = $grade->config->show_report_completion;
+    }
+    $show_report_grade = false;
+    if (isset($grade->config->show_report_grade)) {
+        $show_report_grade = $grade->config->show_report_grade;
+    }
+    
     $outputhtml = '<table class="generaltable" id="notas">';
     $outputhtml .= '<tr class="">';
     $outputhtml .= '<td class="cell c0 small" style="">'
@@ -381,11 +398,37 @@ function block_grade_overview_get_view_editor($course, $instanceid, $atvscheck, 
             . ($totalstundents - $totalaccess) . '</strong></td>';
     $outputhtml .= '</tr>';
     $outputhtml .= '</table>';
-    $outputhtml .= '<hr/><div class="w-100 text-right small"><a href="'
+    
+    // Search user group.
+    $groupid = 0;
+    if ($course->groupmode == 1 || $course->groupmode == 2) {
+        $groups = \groups_get_all_groups($course->id, $USER->id);
+        foreach ($groups as $group) {
+            $groupid = $group->id;
+        }
+    }
+    $linkgroup = '&group=' . $groupid;
+
+    $outputhtml .= '<hr/><div class="w-100 text-right small">';
+    if($show_report_completion){
+        $outputhtml .=  '<a href="'
+        . $CFG->wwwroot . '/blocks/grade_overview/view_completion.php?id='
+        . $course->id . '&instanceid=' . $instanceid . $linkgroup
+        . '"><i class="icon fa fa-check-square fa-lg " aria-hidden="true"></i>'
+        . get_string('completion_view', 'block_grade_overview') . '</a>  ';
+        
+        if($show_report_grade){
+            $outputhtml .=  ' | ';
+        }
+    }
+    if($show_report_grade){
+        $outputhtml .=  '<a href="'
             . $CFG->wwwroot . '/blocks/grade_overview/view.php?id='
-            . $course->id . '&instanceid=' . $instanceid
+            . $course->id . '&instanceid=' . $instanceid . $linkgroup
             . '"><i class="icon fa fa-table fa-lg " aria-hidden="true"></i>'
-            . get_string('detailed_view', 'block_grade_overview') . '</a></div>';
+            . get_string('detailed_view', 'block_grade_overview') . '</a>';
+    }
+    $outputhtml .=  '</div>';
 
     return $outputhtml;
 }
@@ -414,6 +457,27 @@ function block_grade_overview_get_user_mod_grade($userid, $instanceid, $type, $c
 }
 
 /**
+ * Validates the font size that was entered by the user.
+ *
+ * @param string $userid the font size integer to validate.
+ * @param string $courseid the font size integer to validate.
+ * @param string $cmid the font size integer to validate.
+ * @return true|false
+ */
+function block_grade_overview_is_completed_module($userid, $courseid, $cmid) {
+    global $DB;
+    $countok = $DB->get_record_sql("SELECT COUNT(c.id) AS total FROM {course_modules_completion} c"
+            . " INNER JOIN {course_modules} m ON c.coursemoduleid = m.id WHERE c.userid="
+            . $userid . " AND m.course=" . $courseid . " AND c.coursemoduleid=" . $cmid .
+            " AND m.completion > 0 AND c.completionstate > 0 AND m.deletioninprogress = 0");
+
+    if ($countok->total > 0) {
+        return true;
+    }
+    return false;
+}
+
+/**
  * Validates module is visibled.
  *
  * @param string $courseid id course.
@@ -423,7 +487,7 @@ function block_grade_overview_get_user_mod_grade($userid, $instanceid, $type, $c
 function block_grade_overview_is_visibled_module($courseid, $cmid) {
     global $DB;
     $sql = "SELECT COUNT(id) AS total FROM {course_modules} "
-         . "WHERE course= :courseid AND id= :cmid AND completion > 0 AND deletioninprogress = 0";
+            . "WHERE course= :courseid AND id= :cmid AND completion > 0 AND deletioninprogress = 0";
     $params['courseid'] = $courseid;
     $params['cmid'] = $cmid;
     $countatv = $DB->get_record_sql($sql, $params);

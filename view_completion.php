@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -24,6 +25,7 @@
  */
 require_once(dirname(__FILE__) . '/../../config.php');
 require_once($CFG->dirroot . '/blocks/grade_overview/lib.php');
+require_once($CFG->libdir . '/completionlib.php');
 require_login();
 
 global $USER, $SESSION, $COURSE, $OUTPUT, $CFG;
@@ -36,10 +38,10 @@ $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 
 require_login($course);
 $PAGE->set_pagelayout('course');
-$PAGE->set_url('/blocks/grade_overview/view.php', array('id' => $courseid));
+$PAGE->set_url('/blocks/grade_overview/view_completion.php', array('id' => $courseid, 'instanceid' => $id));
 $PAGE->set_context(context_course::instance($courseid));
-$PAGE->set_title(get_string('pluginname', 'block_grade_overview'));
-$PAGE->set_heading(get_string('pluginname', 'block_grade_overview'));
+$PAGE->set_title(get_string('completion_report', 'block_grade_overview'));
+$PAGE->set_heading(get_string('completion_report', 'block_grade_overview'));
 
 echo $OUTPUT->header();
 
@@ -52,52 +54,69 @@ if (isset($SESSION->grade)) {
     $activities = $coursedata['activities'];
     $atvscheck = array();
     foreach ($activities as $index => $activity) {
-        $atvcheck = 'atv' . $activity['id'];
-        if (isset($grade->config->$atvcheck) && $grade->config->$atvcheck == $activity['id']) {
-            $atvscheck[] = $activity;
-        }
+        $atvscheck[] = $activity;
     }
     // If teacher.
     $context = \context_course::instance($courseid, MUST_EXIST);
     if (has_capability('block/grade_overview:view', $blockcontext, $USER->id)) {
-        $outputhtml .= groups_print_course_menu($course, '/blocks/grade_overview/view.php?id=' . $courseid . '&instanceid=' . $id);
+        $outputhtml .= groups_print_course_menu($course, '/blocks/grade_overview/view_completion.php?id=' . $courseid . '&instanceid=' . $id);
         
-        echo $OUTPUT->download_dataformat_selector(get_string('downloadthis', 'block_grade_overview'), 'download.php', 'dataformat', ['id' => $courseid, 'instanceid' => $id, 'group' => $groupid, 'op' => 'd']);
+        echo $OUTPUT->download_dataformat_selector(get_string('downloadthis', 'block_grade_overview'), 'download.php', 'dataformat', ['id' => $courseid, 'instanceid' => $id, 'group' => $groupid, 'op' => 'c']);
+
         $calc = 0;
         if (isset($grade->config->calc) && $grade->config->calc > 0) {
             $calc = $grade->config->calc;
         }
         $users = block_grade_overview_get_students_course($courseid, $groupid);
-        $outputhtml .= '<table class="generaltable" id="notas">';
-        $outputhtml .= '<tr class="">';
-        $outputhtml .= '<td class="cell c0" style=""><strong>' . get_string('name') . '</strong></td>';
+        $outputhtml .= '<table class="generaltable table-bordered" id="notas">';
+        $outputhtml .= '<tr style="vertical-align:baseline; height: 280px;">';
+        $outputhtml .= '<td class="cell" scope="col" style="vertical-align: bottom;"><strong>' . get_string('name') . '</strong></td>';
+        $outputhtml .= '<td class="cell" scope="col" style="vertical-align: bottom;"><strong>' . get_string('email') . '</strong></td>';
+        $outputhtml .= '<td class="cell" scope="col" style="vertical-align: bottom;"><strong>' . get_string('group') . '</strong></td>';
         $count = 1;
         $max = count($atvscheck);
         foreach ($atvscheck as $atv) {
+
+            $attributes = ['class' => 'iconlarge activityicon'];
+            $icon = $OUTPUT->pix_icon('icon', $atv['modulename'], $atv['type'], $attributes);
+
             $last = '';
             if ($count == $max && $calc == 0) {
                 $last = 'lastcol';
             }
-            $outputhtml .= '<td class="cell c' . $count . ' '
-                    . $last . ' text-center" style=""><a href="'
-                    . $atv['url'] . '">' . $atv['name'] . '</a></td>';
+            $outputhtml .= '<td class="cell text-center" scope="col" style="vertical-align: bottom;">'
+                    . '<a href="' . $atv['url']
+                    . '"><div class="rotated-text-container" style="display: inline-block; width: 26px;"><span style="display: inline-block;  white-space: nowrap; transform: translate(0, 100%) rotate(-90deg); transform-origin: 0 0; vertical-align: bottom;">'
+                    . $icon . shorten_text($atv['name']) . '</span></div></a></td>';
             $count++;
         }
 
-        if ($calc > 0) {
-            $outputhtml .= '<td class="cell c' . $count . ' lastcol text-center" style=""><strong>'
-                    . get_string('final_grade', 'block_grade_overview') . '</strong></td>';
-        }
 
         $outputhtml .= '</tr>';
         foreach ($users as $userx) {
             $userpictureparams = array('size' => 30, 'link' => false, 'alt' => 'User');
             $userpicture = $OUTPUT->user_picture($userx, $userpictureparams);
+            $groups = \groups_get_user_groups($courseid, $userx->id);
+            $txtgroup = '';
+            foreach ($groups as $group) {
+                $countgroups = count($group);
+                for ($i = 0; $i <= $countgroups; $i++) {
+                    if (isset($group[$i])) {
+                        if ($i > 0) {
+                            $txtgroup .= ', ';
+                        }
+                        $txtgroup .= \groups_get_group_name($group[$i]);
+                    }
+                }
+            }
             $outputhtml .= '<tr class="">';
-            $outputhtml .= '<td class="cell c0" style="">'
+            $outputhtml .= '<td class="cell " scope="col" style="">'
                     . '<a class="username" href="' . $CFG->wwwroot . '/user/view.php?id='
                     . $userx->id . '&amp;course=' . $courseid . '">'
                     . $userpicture . $userx->firstname . ' ' . $userx->lastname . '</a></td>';
+            $outputhtml .= '<td class="cell " scope="col" style="">' . $userx->email . '</td>';
+            $outputhtml .= '<td class="cell " scope="col" style="">' . $txtgroup . '</td>';
+
             $count = 1;
             $max = count($atvscheck);
             $countx = 0;
@@ -105,7 +124,15 @@ if (isset($SESSION->grade)) {
             $taller = 0;
             $decimal = 2;
             foreach ($atvscheck as $atv) {
+                //print_r($atv);
                 $gradeuser = block_grade_overview_get_user_mod_grade($userx->id, $atv['instance'], $atv['type'], $courseid);
+                $completedmod = block_grade_overview_is_completed_module($userx->id, $courseid, $atv['id']);
+
+                $txtcompleted = ' - ';
+                if ($completedmod) {
+                    $txtcompleted = ' <i class="icon fa fa-check-square fa-lg " aria-hidden="true" title="Concluído"></i> ';
+                }
+
                 $last = '';
                 if ($count == $max) {
                     $last = 'lastcol';
@@ -116,7 +143,7 @@ if (isset($SESSION->grade)) {
                     }
                     $outputhtml .= '<td class="cell c' . $count . ' '
                             . $last . ' text-center" style="">'
-                            . number_format($gradeuser, $decimal, '.', '') . '</td>';
+                            . number_format($gradeuser, $decimal, '.', '') . $txtcompleted . '</td>';
                     $sum += $gradeuser;
                     if ($gradeuser > $taller) {
                         $taller = $gradeuser;
@@ -124,31 +151,9 @@ if (isset($SESSION->grade)) {
                     $countx++;
                 } else {
                     $outputhtml .= '<td class="cell c' . $count . ' '
-                            . $last . ' text-center" style=""> - </td>';
+                            . $last . ' text-center" style=""> - ' . $txtcompleted . '</td>';
                 }
                 $count++;
-            }
-            $final = 0;
-            if ($calc > 0 && $countx > 0) {
-                switch ($calc) {
-                    case 1:
-                        $final = $sum;
-                        break;
-                    case 2:
-                        $final = $sum / $countx;
-                        break;
-                    case 3:
-                        $final = $taller;
-                        break;
-                }
-                $outputhtml .= '<td class="cell c' . $count . ' '
-                        . $last . ' text-center" style=""><strong>' . number_format($final, $decimal, '.', '')
-                        . '</strong></td>';
-            } else {
-                if ($calc > 0) {
-                    $outputhtml .= '<td class="cell c' . $count . ' '
-                            . $last . ' text-center" style=""><strong> - </strong></td>';
-                }
             }
             $outputhtml .= '</tr>';
         }
