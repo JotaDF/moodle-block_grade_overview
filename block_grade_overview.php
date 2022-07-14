@@ -67,8 +67,8 @@ class block_grade_overview extends block_base {
      */
     public function get_content() {
         global $USER, $COURSE, $SESSION;
-        
-        if ($this->content !== NULL) {
+    
+        if ($this->content !== null) {
             return $this->content;
         }
         $this->content = new stdClass();
