@@ -37,7 +37,7 @@ require_once($CFG->libdir . '/gradelib.php');
  */
 function block_grade_overview_get_grade_activity($courseid, $userid, $iteminstance, $itemtype) {
     global $DB;
-    if ($courseid > 1) {
+    if ($courseid != SITEID) {
         $sql = "SELECT i.itemname,g.userid,g.finalgrade "
                 . "FROM {grade_items} i INNER JOIN {grade_grades} g ON i.id=g.itemid "
                 . "WHERE i.courseid= :courseid "
@@ -64,7 +64,7 @@ function block_grade_overview_get_grade_activity($courseid, $userid, $iteminstan
  */
 function block_grade_overview_get_count_atv_all($courseid, $iteminstance, $itemtype) {
     global $DB;
-    if ($courseid > 1) {
+    if ($courseid != SITEID) {
         $sql = "SELECT count(*) as total "
                 . "FROM {grade_items} i "
                 . "INNER JOIN {grade_grades} g ON i.id=g.itemid "
@@ -89,7 +89,7 @@ function block_grade_overview_get_count_atv_all($courseid, $iteminstance, $itemt
  */
 function block_grade_overview_count_students_course($courseid) {
     global $DB;
-    if ($courseid > 1) {
+    if ($courseid != SITEID) {
         $sql = "SELECT count(*) total FROM {role_assignments} rs"
                 . " INNER JOIN {user} u ON u.id=rs.userid"
                 . " INNER JOIN {context} e ON rs.contextid=e.id"
@@ -112,7 +112,7 @@ function block_grade_overview_count_students_course($courseid) {
  */
 function block_grade_overview_get_students_course($courseid, $groupid = 0) {
     global $DB;
-    if ($courseid > 1) {
+    if ($courseid != SITEID) {
         $wheregroup = "";
         if ($groupid > 0) {
             $wheregroup = " AND u.id IN(SELECT userid FROM {groups_members} WHERE groupid=:groupid) ";
@@ -140,7 +140,7 @@ function block_grade_overview_get_students_course($courseid, $groupid = 0) {
  */
 function block_grade_overview_count_students_accessed_course($courseid) {
     global $DB;
-    if ($courseid > 1) {
+    if ($courseid != SITEID) {
         $sql = "SELECT count(*) total FROM {role_assignments} rs"
                 . " INNER JOIN {user} u ON u.id=rs.userid"
                 . " INNER JOIN {context} e ON rs.contextid=e.id"
