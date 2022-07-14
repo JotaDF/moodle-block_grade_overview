@@ -36,7 +36,7 @@ $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 
 require_login($course);
 $PAGE->set_pagelayout('course');
-$PAGE->set_url('/blocks/grade_overview/view.php', array('id' => $courseid));
+$PAGE->set_url('/blocks/grade_overview/view.php',  array('id' => $courseid, 'instanceid' => $id));
 $PAGE->set_context(context_course::instance($courseid));
 $PAGE->set_title(get_string('pluginname', 'block_grade_overview'));
 $PAGE->set_heading(get_string('pluginname', 'block_grade_overview'));
