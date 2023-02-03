@@ -83,7 +83,7 @@ if (isset($courseid) && $op === "c") {
 
             $txtcompleted = ' - ';
             if ($completedmod) {
-                $txtcompleted = ' Concluído ';
+                $txtcompleted = get_string('completed', 'block_grade_overview');;
             }
             if (isset($gradeuser) && $gradeuser) {
                 if (isset($grade->config->decimal_places)) {
